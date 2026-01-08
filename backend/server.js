@@ -22,7 +22,7 @@ mongoose.connect('mongodb://localhost:27017/finance-tracker')
     process.exit(1);
 });
 
-app.use('/api/salary', salaryRoutes);
+app.use('/api/income', salaryRoutes);
 app.use('/api/expense', expenseRoutes);
 app.use('/api/bucket', bucketRoutes);
 app.use('/api/dashboard', dashboardRoutes);
