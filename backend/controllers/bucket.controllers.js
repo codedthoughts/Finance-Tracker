@@ -1,0 +1,138 @@
+import Bucket from "../models/bucket.models.js";
+import {checkTotalPercentage} from "../utility/financeHelpers.js";
+
+export const getAllBuckets = async (req, res) => {
+    try 
+    {
+        const buckets = await Bucket.find({});
+
+        res.status(200).json(buckets);
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const addBucket = async (req, res) => {
+    try 
+    {
+        const { bucketName, percentage, purpose } = req.body;
+        
+        if (!bucketName || percentage === undefined || !purpose) 
+        {
+            return res.status(400).json({ 
+                message: 'Bucket name, percentage, and purpose are required' 
+            });
+        }
+        
+        const totalPercentageCheck = await checkTotalPercentage(percentage);
+
+        if (!totalPercentageCheck) 
+        {
+            return res.status(400).json({ 
+                message: 'Total percentage exceeds 100%' 
+            });
+        }
+        
+        const bucket = await Bucket.create({
+            bucketName,
+            percentage,
+            purpose,
+            currentAllocationAmount: 0,
+            currentMonthAmount: 0,
+            bucketFund: 0,
+            date: new Date()
+        });
+        
+        res.status(201).json(bucket);
+        
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const updateBucket = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { bucketName, percentage, purpose } = req.body;
+
+        if (!id) 
+        {
+            return res.status(400).json({ message: 'Bucket ID is required' });
+        }
+
+        if (!bucketName && percentage === undefined && !purpose) 
+        {
+            return res.status(400).json({ message: 'At least one field (bucketName, percentage, or purpose) must be provided for update' });
+        }
+        
+        const existingBucket = await Bucket.findById(id);
+
+        if (!existingBucket) 
+        {
+            return res.status(404).json({ message: 'Bucket not found' });
+        }
+        
+        if (percentage !== undefined && percentage !== existingBucket.percentage) 
+        {
+            const allBuckets = await Bucket.find({});
+            const currentTotalWithoutThisBucket = allBuckets
+                .filter(bucket => bucket._id.toString() !== id)
+                .reduce((total, bucket) => total + bucket.percentage, 0);
+            
+            if (currentTotalWithoutThisBucket + percentage > 100) 
+            {
+                return res.status(400).json({ message: "Total allocation cannot exceed 100%" });
+            }
+        }
+        
+        const updateData = {};
+        if (bucketName !== undefined) updateData.bucketName = bucketName;
+        if (percentage !== undefined) updateData.percentage = percentage;
+        if (purpose !== undefined) updateData.purpose = purpose;
+        
+        const updatedBucket = await Bucket.findByIdAndUpdate(
+            id, 
+            updateData, 
+            { new: true, runValidators: true }
+        );
+        
+        res.status(200).json(updatedBucket);
+        
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const deleteBucket = async (req, res) => {
+    try 
+    {
+        const { id } = req.params;
+
+        const bucket = await Bucket.findById(id);
+
+        if (!bucket) 
+        {
+            return res.status(404).json({ message: "Bucket not found" });
+        }
+
+        const releasedAmount = bucket.currentMonthAmount + bucket.bucketFund;
+
+        await Bucket.findByIdAndDelete(id);
+
+        res.status(200).json({ 
+            message: `Bucket deleted successfully. ₹${releasedAmount} has been moved to General Savings.`,
+            releasedAmount: releasedAmount
+        });
+
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ message: error.message });
+    }
+};

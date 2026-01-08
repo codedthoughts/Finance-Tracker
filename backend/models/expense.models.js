@@ -11,7 +11,13 @@ const expenseSchema = new mongoose.Schema({
     {
         type: String,
         required: true,
-        enum: ['Manual', 'From Bucket']
+        enum: ['Manual', 'Bucket']
+    },
+    bucketId: 
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Bucket',
+        required: false
     },
     date: 
     {

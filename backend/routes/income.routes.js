@@ -1,6 +1,9 @@
 import express from 'express';
-import salaryController from '../controllers/income.controllers.js';
+import {addIncome, getHistory} from '../controllers/income.controllers.js';
 
 const router = express.Router();
+
+router.post('/add', addIncome);
+router.get('/history', getHistory);
 
 export default router;
