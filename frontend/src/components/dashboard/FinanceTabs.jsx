@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { TrendingUp, FolderOpen, ShoppingCart } from 'lucide-react';
-import FinancialSummary from './FinancialSummary';
 import IncomeTracker from './IncomeTracker';
 import Buckets from './Buckets';
 import RecentTransactions from './RecentTransactions';
-import styles from './Dashboard.module.css';
+import styles from './FinanceTabs.module.css';
 
-const Dashboard = () => {
+const FinanceTabs = () => {
   const [activeTab, setActiveTab] = useState('buckets');
 
   const tabs = [
@@ -14,6 +13,10 @@ const Dashboard = () => {
     { id: 'buckets', label: 'Buckets', icon: FolderOpen },
     { id: 'expenses', label: 'Expenses', icon: ShoppingCart },
   ];
+
+  const handleTabClick = (tabId) => {
+    setActiveTab(tabId);
+  };
 
   const renderActiveComponent = () => {
     switch (activeTab) {
@@ -24,39 +27,32 @@ const Dashboard = () => {
       case 'expenses':
         return <RecentTransactions />;
       default:
-        return <Buckets />;
+        return <IncomeTracker />;
     }
   };
 
   return (
-    <div className={styles.dashboard}>
-      {/* Section A: Money Stats (Top Row) */}
-      <section className={styles.moneyStats}>
-        <FinancialSummary />
-      </section>
-
-      {/* Section B: Finance Tabs (Direct part of Dashboard) */}
-      <section className={styles.tabsSection}>
+    <div className={styles.financeTabs}>
+      <div className={styles.tabsWrapper}>
         <div className={styles.tabsContainer}>
           {tabs.map((tab) => (
             <button
               key={tab.id}
               className={`${styles.tabButton} ${activeTab === tab.id ? styles.active : ''}`}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => handleTabClick(tab.id)}
             >
               <tab.icon size={20} />
               <span>{tab.label}</span>
             </button>
           ))}
         </div>
-      </section>
+      </div>
 
-      {/* Section C: Content Area */}
-      <section className={styles.contentSection}>
+      <div className={styles.contentArea}>
         {renderActiveComponent()}
-      </section>
+      </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default FinanceTabs;

@@ -4,12 +4,6 @@ import { bucketAPI } from '../../services/api';
 import styles from './Buckets.module.css';
 
 const BucketCard = ({ bucket, onEdit, onDelete }) => {
-  const progressPercentage = bucket.currentMonthAmount > 0 
-    ? Math.min((bucket.currentMonthAmount / (bucket.currentAllocationAmount || 1)) * 100, 100)
-    : 0;
-
-  const totalBalance = bucket.currentMonthAmount + bucket.bucketFund;
-
   return (
     <div className={styles.bucketCard}>
       <div className={styles.bucketHeader}>
@@ -30,47 +24,52 @@ const BucketCard = ({ bucket, onEdit, onDelete }) => {
             title="Edit"
           >
             <Edit2 size={16} />
+            <span className={styles.buttonText}>Edit</span>
           </button>
           <button 
             onClick={() => onDelete(bucket)}
-            className={styles.actionButton}
+            className={`${styles.actionButton} ${styles.deleteButton}`}
             title="Delete"
           >
-            <Trash2 size={16} />
+            <span className={styles.deleteText}>×</span>
           </button>
         </div>
       </div>
 
       <div className={styles.bucketStats}>
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>Current</span>
-          <span className={styles.statValue}>
-            ₹{bucket.currentMonthAmount.toLocaleString('en-IN')}
-          </span>
-        </div>
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>Fund</span>
-          <span className={styles.statValue}>
+        <div className={styles.fundDisplay}>
+          <span className={styles.fundLabel}>Bucket Fund</span>
+          <span className={styles.fundAmount}>
             ₹{bucket.bucketFund.toLocaleString('en-IN')}
           </span>
         </div>
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>Total</span>
-          <span className={styles.statValue}>
-            ₹{totalBalance.toLocaleString('en-IN')}
-          </span>
+        <div className={styles.otherStats}>
+          <div className={styles.stat}>
+            <span className={styles.statLabel}>Current</span>
+            <span className={styles.statValue}>
+              ₹{bucket.currentMonthAmount.toLocaleString('en-IN')}
+            </span>
+          </div>
+          <div className={styles.stat}>
+            <span className={styles.statLabel}>Total</span>
+            <span className={styles.statValue}>
+              ₹{(bucket.currentMonthAmount + bucket.bucketFund).toLocaleString('en-IN')}
+            </span>
+          </div>
         </div>
       </div>
 
       <div className={styles.progressSection}>
         <div className={styles.progressHeader}>
-          <span className={styles.progressLabel}>Monthly Progress</span>
-          <span className={styles.progressPercentage}>{progressPercentage.toFixed(0)}%</span>
+          <span className={styles.progressLabel}>Money Used</span>
+          <span className={styles.progressPercentage}>
+            {Math.min((bucket.currentMonthAmount / (bucket.currentAllocationAmount || 1)) * 100, 100).toFixed(0)}%
+          </span>
         </div>
         <div className={styles.progressBar}>
           <div 
             className={styles.progressFill}
-            style={{ width: `${progressPercentage}%` }}
+            style={{ width: `${Math.min((bucket.currentMonthAmount / (bucket.currentAllocationAmount || 1)) * 100, 100)}%` }}
           ></div>
         </div>
         <div className={styles.progressDetails}>
@@ -140,14 +139,65 @@ const Buckets = () => {
     setShowEditModal(true);
   };
 
-  const handleDelete = async (bucket) => {
-    if (window.confirm(`Are you sure you want to delete "${bucket.bucketName}"? This will release ₹${(bucket.currentMonthAmount + bucket.bucketFund).toLocaleString('en-IN')} to general savings.`)) {
-      try {
-        await bucketAPI.deleteBucket(bucket._id);
-        setBuckets(prev => prev.filter(b => b._id !== bucket._id));
-      } catch (err) {
-        alert('Failed to delete bucket: ' + err.message);
-      }
+  const handleDelete = (bucket) => {
+    // Create a custom alert
+    const alertDiv = document.createElement('div');
+    alertDiv.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+    
+    const alertContent = `
+      <div style="background: white; padding: 32px; border-radius: 16px; box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15); max-width: 400px; width: 90%;">
+        <h3 style="margin: 0 0 16px 0; color: #DC2626; font-size: 18px; font-weight: 600;">Delete Bucket</h3>
+        <p style="margin: 8px 0; color: #6B7280; line-height: 1.5;">Are you sure you want to delete "<strong>${bucket.bucketName}</strong>"?</p>
+        <p style="margin: 8px 0; color: #6B7280; font-size: 14px;">This will release <strong>₹${(bucket.currentMonthAmount + bucket.bucketFund).toLocaleString('en-IN')}</strong> to general savings.</p>
+        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+          <button id="cancelDelete" style="padding: 8px 16px; background: #6B7280; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;">Cancel</button>
+          <button id="confirmDelete" style="padding: 8px 16px; background: #DC2626; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;">Delete</button>
+        </div>
+      </div>
+    `;
+    
+    alertDiv.innerHTML = alertContent;
+    document.body.appendChild(alertDiv);
+    
+    // Handle button clicks
+    const cancelBtn = document.getElementById('cancelDelete');
+    const confirmBtn = document.getElementById('confirmDelete');
+    
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        alertDiv.remove();
+      });
+    }
+    
+    if (confirmBtn) {
+      confirmBtn.addEventListener('click', async () => {
+        try {
+          const bucketId = bucket._id;
+          
+          // Call the delete API
+          await bucketAPI.deleteBucket(bucketId);
+          
+          // Update local state
+          setBuckets(prev => prev.filter(b => b._id !== bucketId));
+          
+          // Remove the alert
+          alertDiv.remove();
+        } catch (error) {
+          console.error('Delete error:', error);
+          alertDiv.remove();
+        }
+      });
     }
   };
 
@@ -177,7 +227,7 @@ const Buckets = () => {
   return (
     <div className={styles.buckets}>
       <div className={styles.header}>
-        <h3 className={styles.title}>My Buckets</h3>
+        <h3 className={styles.title}></h3>
         <button 
           className={styles.addButton}
           onClick={() => setShowAddModal(true)}

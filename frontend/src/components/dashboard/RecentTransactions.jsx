@@ -191,7 +191,7 @@ const RecentTransactions = () => {
     <div className={styles.recentTransactions}>
       <div className={styles.header}>
         <div className={styles.titleSection}>
-          <h3 className={styles.title}>Recent Transactions</h3>
+          <h3 className={styles.title}></h3>
           <div className={styles.totalExpenses}>
             Total: ₹{totalExpenses.toLocaleString('en-IN')}
           </div>

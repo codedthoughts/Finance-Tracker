@@ -42,22 +42,23 @@
 }
 
 .bucketsList {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 
 .bucketCard {
-  background-color: #F9FAFB;
+  background-color: var(--card-background);
   border-radius: 16px;
   padding: 20px;
-  border: 1px solid #E5E7EB;
+  box-shadow: var(--shadow-md);
   transition: all 0.2s ease;
+  border: 1px solid #E5E7EB;
 }
 
 .bucketCard:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .bucketHeader {
@@ -116,6 +117,8 @@
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid #E5E7EB;
+  z-index: 10;
+  position: relative;
 }
 
 .actionButton:hover {
@@ -124,11 +127,60 @@
   border-color: var(--primary-color);
 }
 
+.buttonText {
+  font-size: 12px;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.deleteButton {
+  background-color: #FEE2E2;
+  border-color: #FECACA;
+}
+
+.deleteButton:hover {
+  background-color: #FCA5A5;
+  border-color: #FCA5A5;
+}
+
+.deleteText {
+  color: #DC2626;
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+}
+
 .bucketStats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
   margin-bottom: 16px;
+}
+
+.fundDisplay {
+  background: linear-gradient(135deg, var(--primary-color), #E67E00);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.fundLabel {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.9;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.fundAmount {
+  font-size: 24px;
+  font-weight: 700;
+  display: block;
+}
+
+.otherStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .stat {

@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Wallet, Lock } from 'lucide-react';
+import { Wallet, Lock, TrendingUp } from 'lucide-react';
 import { dashboardAPI } from '../../services/api';
 import styles from './FinancialSummary.module.css';
 
-const StatCard = ({ title, value, icon: Icon, trend, isHighlighted = false }) => {
-  const isPositive = trend > 0;
-  
+const StatCard = ({ title, value, icon: Icon, isHighlighted = false }) => {
   return (
     <div className={`${styles.statCard} ${isHighlighted ? styles.highlighted : ''}`}>
       <div className={styles.statHeader}>
         <div className={styles.statIcon}>
-          <Icon size={24} />
+          <Icon size={20} />
         </div>
-        {trend !== undefined && (
-          <div className={`${styles.trend} ${isPositive ? styles.positive : styles.negative}`}>
-            {isPositive ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-            <span>{Math.abs(trend)}%</span>
-          </div>
-        )}
       </div>
       
       <div className={styles.statContent}>
@@ -95,14 +87,12 @@ const FinancialSummary = () => {
         title="Net Worth"
         value={summary.netWorth}
         icon={Wallet}
-        trend={12.5}
       />
       
       <StatCard
         title="General Savings"
         value={summary.generalSavings}
         icon={TrendingUp}
-        trend={8.2}
         isHighlighted={true}
       />
       
@@ -110,7 +100,6 @@ const FinancialSummary = () => {
         title="Locked Funds"
         value={summary.lockedFunds}
         icon={Lock}
-        trend={-2.1}
       />
     </div>
   );

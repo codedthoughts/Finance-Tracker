@@ -79,7 +79,7 @@ const IncomeTracker = () => {
     <div className={styles.incomeTracker}>
       <div className={styles.header}>
         <div className={styles.titleSection}>
-          <h3 className={styles.title}>Income Tracker</h3>
+          <h3 className={styles.title}></h3>
           <div className={styles.stats}>
             <div className={styles.stat}>
               <span className={styles.statLabel}>Total</span>
