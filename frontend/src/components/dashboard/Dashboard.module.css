@@ -1,0 +1,52 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Section A: Money Stats */
+.moneyStats {
+  width: 100%;
+}
+
+/* Section B: Income & Buckets */
+.incomeBuckets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.incomeSection,
+.bucketsSection {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section C: Expenses */
+.expensesSection {
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard {
+    gap: 24px;
+  }
+  
+  .incomeBuckets {
+    gap: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    gap: 20px;
+  }
+  
+  .incomeBuckets {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
