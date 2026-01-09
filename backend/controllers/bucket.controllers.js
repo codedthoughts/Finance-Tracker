@@ -25,8 +25,10 @@ export const addBucket = async (req, res) => {
                 message: 'Bucket name, percentage, and purpose are required' 
             });
         }
+
+        const numericPercentage = parseFloat(percentage);
         
-        const totalPercentageCheck = await checkTotalPercentage(percentage);
+        const totalPercentageCheck = await checkTotalPercentage(numericPercentage);
 
         if (!totalPercentageCheck) 
         {
@@ -75,15 +77,17 @@ export const updateBucket = async (req, res) => {
         {
             return res.status(404).json({ message: 'Bucket not found' });
         }
+
+        const numericPercentage = parseFloat(percentage);
         
-        if (percentage !== undefined && percentage !== existingBucket.percentage) 
+        if (numericPercentage !== undefined && numericPercentage !== existingBucket.percentage) 
         {
             const allBuckets = await Bucket.find({});
             const currentTotalWithoutThisBucket = allBuckets
                 .filter(bucket => bucket._id.toString() !== id)
                 .reduce((total, bucket) => total + bucket.percentage, 0);
             
-            if (currentTotalWithoutThisBucket + percentage > 100) 
+            if (currentTotalWithoutThisBucket + numericPercentage > 100) 
             {
                 return res.status(400).json({ message: "Total allocation cannot exceed 100%" });
             }
@@ -91,7 +95,7 @@ export const updateBucket = async (req, res) => {
         
         const updateData = {};
         if (bucketName !== undefined) updateData.bucketName = bucketName;
-        if (percentage !== undefined) updateData.percentage = percentage;
+        if (numericPercentage !== undefined) updateData.percentage = numericPercentage;
         if (purpose !== undefined) updateData.purpose = purpose;
         
         const updatedBucket = await Bucket.findByIdAndUpdate(
