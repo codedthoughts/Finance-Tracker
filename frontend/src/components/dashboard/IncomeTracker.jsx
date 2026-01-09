@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, TrendingUp, Calendar } from 'lucide-react';
+import { Plus, TrendingUp, Calendar, ChevronDown, ChevronUp } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { incomeAPI } from '../../services/api';
 import styles from './IncomeTracker.module.css';
@@ -8,6 +8,7 @@ const IncomeTracker = () => {
   const [incomeData, setIncomeData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [isChartExpanded, setIsChartExpanded] = useState(false);
 
   useEffect(() => {
     const fetchIncome = async () => {
@@ -60,6 +61,10 @@ const IncomeTracker = () => {
   const salaryIncome = incomeData.filter(i => i.type === 'Salary').reduce((sum, i) => sum + i.amount, 0);
   const manualIncome = incomeData.filter(i => i.type === 'Manual').reduce((sum, i) => sum + i.amount, 0);
 
+  const toggleChart = () => {
+    setIsChartExpanded(!isChartExpanded);
+  };
+
   if (loading) {
     return (
       <div className={styles.incomeTracker}>
@@ -91,53 +96,66 @@ const IncomeTracker = () => {
           </div>
         </div>
         
-        <button 
-          className={styles.addButton}
-          onClick={() => setShowModal(true)}
-        >
-          <Plus size={20} />
-          Add Income
-        </button>
-      </div>
-
-      <div className={styles.chartContainer}>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis 
-              dataKey="month" 
-              tick={{ fill: '#6B7280', fontSize: 12 }}
-              axisLine={{ stroke: '#E5E7EB' }}
-            />
-            <YAxis 
-              tick={{ fill: '#6B7280', fontSize: 12 }}
-              axisLine={{ stroke: '#E5E7EB' }}
-            />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: 'white', 
-                border: '1px solid #E5E7EB',
-                borderRadius: '8px',
-                boxShadow: 'var(--shadow-md)'
-              }}
-              formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, '']}
-            />
-            <Bar dataKey="salary" fill="#F79009" radius={[8, 8, 0, 0]} />
-            <Bar dataKey="manual" fill="#10B981" radius={[8, 8, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-
-      <div className={styles.legend}>
-        <div className={styles.legendItem}>
-          <div className={styles.legendColor} style={{ backgroundColor: '#F79009' }}></div>
-          <span>Salary Income</span>
-        </div>
-        <div className={styles.legendItem}>
-          <div className={styles.legendColor} style={{ backgroundColor: '#10B981' }}></div>
-          <span>Manual Income</span>
+        <div className={styles.headerActions}>
+          <button 
+            className={styles.chartToggle}
+            onClick={toggleChart}
+          >
+            <ChevronDown size={20} className={isChartExpanded ? styles.rotated : ''} />
+          </button>
+          
+          <button 
+            className={styles.addButton}
+            onClick={() => setShowModal(true)}
+          >
+            <Plus size={20} />
+            Add Income
+          </button>
         </div>
       </div>
+
+      <div className={`${styles.chartContainer} ${isChartExpanded ? styles.expanded : styles.collapsed}`}>
+        <div className={styles.chartWrapper}>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis 
+                dataKey="month" 
+                tick={{ fill: '#6B7280', fontSize: 12 }}
+                axisLine={{ stroke: '#E5E7EB' }}
+              />
+              <YAxis 
+                tick={{ fill: '#6B7280', fontSize: 12 }}
+                axisLine={{ stroke: '#E5E7EB' }}
+              />
+              <Tooltip 
+                contentStyle={{ 
+                  backgroundColor: 'white', 
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '8px',
+                  boxShadow: 'var(--shadow-md)'
+                }}
+                formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, '']}
+              />
+              <Bar dataKey="salary" fill="#F79009" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="manual" fill="#10B981" radius={[8, 8, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {isChartExpanded && (
+        <div className={styles.legend}>
+          <div className={styles.legendItem}>
+            <div className={styles.legendColor} style={{ backgroundColor: '#F79009' }}></div>
+            <span>Salary Income</span>
+          </div>
+          <div className={styles.legendItem}>
+            <div className={styles.legendColor} style={{ backgroundColor: '#10B981' }}></div>
+            <span>Manual Income</span>
+          </div>
+        </div>
+      )}
 
       {showModal && (
         <AddIncomeModal 

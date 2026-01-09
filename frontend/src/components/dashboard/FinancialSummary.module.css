@@ -1,23 +1,23 @@
 .financialSummary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
   margin-bottom: 32px;
 }
 
 .statCard {
   background-color: var(--card-background);
-  border-radius: var(--border-radius);
-  padding: 24px;
-  box-shadow: var(--shadow-md);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
 .statCard:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .statCard.highlighted {
@@ -42,14 +42,14 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .statIcon {
-  width: 48px;
-  height: 48px;
+  width: 28px;
+  height: 28px;
   background-color: #F3F4F6;
-  border-radius: 16px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,10 +59,10 @@
 .trend {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 8px;
-  font-size: 12px;
+  gap: 3px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-size: 10px;
   font-weight: 500;
 }
 
@@ -87,18 +87,18 @@
 }
 
 .statContent {
-  margin-top: 16px;
+  margin-top: 8px;
 }
 
 .statTitle {
-  font-size: 14px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--text-secondary);
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
 }
 
 .statValue {
-  font-size: 32px;
+  font-size: 18px;
   font-weight: 700;
   margin: 0;
   line-height: 1.2;
@@ -156,24 +156,24 @@
 @media (max-width: 768px) {
   .financialSummary {
     grid-template-columns: 1fr;
-    gap: 16px;
+    gap: 10px;
   }
   
   .statValue {
-    font-size: 28px;
+    font-size: 16px;
   }
   
   .statCard {
-    padding: 20px;
+    padding: 10px;
   }
   
   .statIcon {
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
   }
   
   .statIcon svg {
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
   }
 }

@@ -46,6 +46,44 @@
   color: var(--text-color);
 }
 
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.chartToggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F3F4F6;
+  color: var(--text-color);
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  width: 44px;
+  height: 44px;
+}
+
+.chartToggle:hover {
+  background-color: #E5E7EB;
+  border-color: #D1D5DB;
+  transform: translateY(-1px);
+}
+
+.chartToggle svg {
+  transition: transform 0.3s ease;
+}
+
+.chartToggle svg.rotated {
+  transform: rotate(180deg);
+}
+
 .addButton {
   display: flex;
   align-items: center;
@@ -69,8 +107,26 @@
 }
 
 .chartContainer {
+  margin-bottom: 0;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chartContainer.collapsed {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.chartContainer.expanded {
+  max-height: 400px;
+  opacity: 1;
+  transform: translateY(0);
   margin-bottom: 20px;
-  height: 300px;
+}
+
+.chartWrapper {
+  padding: 16px 0;
 }
 
 .legend {
