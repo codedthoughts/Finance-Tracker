@@ -42,12 +42,7 @@ const FinancialSummary = () => {
         setSummary(data);
       } catch (err) {
         setError(err.message);
-        // Mock data for development
-        setSummary({
-          netWorth: 85000,
-          generalSavings: 15000,
-          lockedFunds: 70000,
-        });
+        console.error('Failed to fetch summary:', err);
       } finally {
         setLoading(false);
       }
