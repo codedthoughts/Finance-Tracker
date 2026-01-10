@@ -14,30 +14,6 @@ const categoryIcons = {
 };
 
 const TransactionRow = ({ transaction, buckets, onDelete }) => {
-  const getCategoryIcon = (note) => {
-    const noteLower = note.toLowerCase();
-    if (noteLower.includes('shop') || noteLower.includes('buy')) return ShoppingCart;
-    if (noteLower.includes('home') || noteLower.includes('rent')) return Home;
-    if (noteLower.includes('car') || noteLower.includes('transport')) return Car;
-    if (noteLower.includes('health') || noteLower.includes('medical')) return Heart;
-    if (noteLower.includes('food') || noteLower.includes('coffee')) return Coffee;
-    if (noteLower.includes('work') || noteLower.includes('office')) return Briefcase;
-    return MoreHorizontal;
-  };
-
-  const getCategoryName = (note) => {
-    const noteLower = note.toLowerCase();
-    if (noteLower.includes('shop') || noteLower.includes('buy')) return 'Shopping';
-    if (noteLower.includes('home') || noteLower.includes('rent')) return 'Home';
-    if (noteLower.includes('car') || noteLower.includes('transport')) return 'Transport';
-    if (noteLower.includes('health') || noteLower.includes('medical')) return 'Health';
-    if (noteLower.includes('food') || noteLower.includes('coffee')) return 'Food';
-    if (noteLower.includes('work') || noteLower.includes('office')) return 'Work';
-    return 'Other';
-  };
-
-  const Icon = getCategoryIcon(transaction.note || '');
-  const categoryName = getCategoryName(transaction.note || '');
   const bucketName = transaction.type === 'Bucket' && transaction.bucketId 
     ? buckets.find(b => b._id === transaction.bucketId)?.bucketName 
     : null;
@@ -45,15 +21,14 @@ const TransactionRow = ({ transaction, buckets, onDelete }) => {
   return (
     <div className={styles.transactionRow}>
       <div className={styles.transactionLeft}>
-        <div className={styles.categoryIcon}>
-          <Icon size={20} />
-        </div>
         <div className={styles.transactionInfo}>
           <div className={styles.transactionNote}>
             {transaction.note || 'No note'}
           </div>
           <div className={styles.transactionMeta}>
-            <span className={styles.category}>{categoryName}</span>
+            <span className={styles.category}>
+              {bucketName || transaction.type}
+            </span>
             <span className={styles.date}>
               {new Date(transaction.date).toLocaleDateString('en-US', {
                 month: 'short',
@@ -68,9 +43,6 @@ const TransactionRow = ({ transaction, buckets, onDelete }) => {
       <div className={styles.transactionRight}>
         <div className={styles.transactionAmount}>
           -₹{transaction.amount.toLocaleString('en-IN')}
-        </div>
-        <div className={styles.transactionTag}>
-          {bucketName || transaction.type}
         </div>
         <button 
           onClick={() => onDelete(transaction)}
@@ -88,6 +60,7 @@ const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [buckets, setBuckets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -103,53 +76,7 @@ const RecentTransactions = () => {
         setBuckets(bucketsData);
       } catch (err) {
         console.error('Failed to fetch data:', err);
-        // Mock data for development
-        setTransactions([
-          {
-            _id: '1',
-            amount: 1500,
-            type: 'Manual',
-            date: '2026-01-10T00:00:00.000Z',
-            note: 'Grocery shopping'
-          },
-          {
-            _id: '2',
-            amount: 2000,
-            type: 'Bucket',
-            bucketId: '1',
-            date: '2026-01-12T00:00:00.000Z',
-            note: 'Emergency medical expense'
-          },
-          {
-            _id: '3',
-            amount: 800,
-            type: 'Manual',
-            date: '2026-01-08T00:00:00.000Z',
-            note: 'Coffee and snacks'
-          },
-          {
-            _id: '4',
-            amount: 3500,
-            type: 'Bucket',
-            bucketId: '2',
-            date: '2026-01-05T00:00:00.000Z',
-            note: 'Vacation booking'
-          },
-        ]);
-        setBuckets([
-          {
-            _id: '1',
-            bucketName: 'Emergency Fund',
-            percentage: 20,
-            purpose: 'Emergency expenses',
-          },
-          {
-            _id: '2',
-            bucketName: 'Vacation',
-            percentage: 10,
-            purpose: 'Travel and leisure',
-          },
-        ]);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -182,6 +109,17 @@ const RecentTransactions = () => {
       <div className={styles.recentTransactions}>
         <div className={styles.loadingState}>
           <div className={styles.loadingShimmer}></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.recentTransactions}>
+        <div className={styles.errorContainer}>
+          <p>Unable to load transactions</p>
+          <button onClick={() => window.location.reload()}>Retry</button>
         </div>
       </div>
     );
