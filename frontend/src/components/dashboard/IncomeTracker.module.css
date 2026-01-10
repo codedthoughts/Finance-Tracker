@@ -101,7 +101,7 @@
 }
 
 .addButton:hover {
-  background-color: #E67E00;
+  background-color: #513fc2;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -280,12 +280,12 @@
 }
 
 .error {
-  color: #EF4444;
+  color: #1e99e5;
   font-size: 14px;
   padding: 12px;
-  background-color: #FEF2F2;
+  background-color: #e6f3ff;
   border-radius: 8px;
-  border: 1px solid #FECACA;
+  border: 1px solid #b3d9ff;
 }
 
 .modalActions {
@@ -325,7 +325,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #E67E00;
+  background-color: #1e99e5;
 }
 
 .submitButton:disabled {

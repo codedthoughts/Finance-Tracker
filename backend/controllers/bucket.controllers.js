@@ -1,5 +1,5 @@
 import Bucket from "../models/bucket.models.js";
-import {checkTotalPercentage} from "../utility/financeHelpers.js";
+import {checkTotalPercentage, calculateGeneralSavings} from "../utility/financeHelpers.js";
 
 export const getAllBuckets = async (req, res) => {
     try 
@@ -132,6 +132,54 @@ export const deleteBucket = async (req, res) => {
         res.status(200).json({ 
             message: `Bucket deleted successfully. ₹${releasedAmount} has been moved to General Savings.`,
             releasedAmount: releasedAmount
+        });
+
+    } 
+    catch (error) 
+    {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const addFromGeneralSavings = async (req, res) => {
+    try 
+    {
+        const { id } = req.params;
+        const { amount } = req.body;
+
+        let myamount = parseFloat(amount);
+
+        if (!myamount || myamount <= 0) 
+        {
+            return res.status(400).json({ message: 'Amount must be a positive number' });
+        }
+
+        const bucket = await Bucket.findById(id);
+
+        if (!bucket) 
+        {
+            return res.status(404).json({ message: 'Bucket not found' });
+        }
+
+        const generalSavings = await calculateGeneralSavings();
+
+        if (generalSavings.generalSavings <= 0) 
+        {
+            return res.status(400).json({ message: 'No funds available in General Savings' });
+        }
+
+        if (generalSavings.generalSavings < myamount) 
+        {
+            return res.status(400).json({ message: 'Not enough balance in General Savings' });
+        }
+
+        bucket.bucketFund += myamount;
+
+        await bucket.save();
+
+        res.status(200).json({
+            message: `₹${myamount} added to bucket successfully`,
+            bucket: bucket
         });
 
     } 

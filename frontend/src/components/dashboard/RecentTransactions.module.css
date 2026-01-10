@@ -46,7 +46,7 @@
 }
 
 .addButton:hover {
-  background-color: #E67E00;
+  background-color: #1e99e5;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -129,7 +129,7 @@
 .transactionAmount {
   font-size: 16px;
   font-weight: 600;
-  color: #EF4444;
+  color: #513fc2;
 }
 
 .transactionTag {
@@ -159,8 +159,8 @@
 }
 
 .deleteButton:hover {
-  background-color: #FEE2E2;
-  color: #EF4444;
+  background-color: #e6f3ff;
+  color: #1e99e5;
 }
 
 /* Empty State */
@@ -199,7 +199,7 @@
 }
 
 .createButton:hover {
-  background-color: #E67E00;
+  background-color: #513fc2;
 }
 
 /* Loading State */
@@ -353,6 +353,11 @@
   transition: all 0.2s ease;
 }
 
+.typeButton:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
 .typeButton.active {
   background-color: white;
   color: var(--primary-color);
@@ -360,12 +365,12 @@
 }
 
 .error {
-  color: #EF4444;
+  color: #1e99e5;
   font-size: 14px;
   padding: 12px;
-  background-color: #FEF2F2;
+  background-color: #e6f3ff;
   border-radius: 8px;
-  border: 1px solid #FECACA;
+  border: 1px solid #b3d9ff;
 }
 
 .modalActions {
@@ -405,7 +410,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #E67E00;
+  background-color: #513fc2;
 }
 
 .submitButton:disabled {

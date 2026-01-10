@@ -3,7 +3,7 @@ import { Plus, Edit2, Trash2, FolderOpen, Target } from 'lucide-react';
 import { bucketAPI } from '../../services/api';
 import styles from './Buckets.module.css';
 
-const BucketCard = ({ bucket, onEdit, onDelete }) => {
+const BucketCard = ({ bucket, onEdit, onDelete, onAddFund }) => {
   return (
     <div className={styles.bucketCard}>
       <div className={styles.bucketHeader}>
@@ -18,6 +18,13 @@ const BucketCard = ({ bucket, onEdit, onDelete }) => {
         </div>
         
         <div className={styles.bucketActions}>
+          <button 
+            onClick={() => onAddFund(bucket)}
+            className={`${styles.actionButton} ${styles.addButton}`}
+            title="Add Fund"
+          >
+            + 
+          </button>
           <button 
             onClick={() => onEdit(bucket)}
             className={styles.actionButton}
@@ -86,6 +93,7 @@ const Buckets = () => {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddFundModal, setShowAddFundModal] = useState(false);
   const [selectedBucket, setSelectedBucket] = useState(null);
 
   useEffect(() => {
@@ -137,6 +145,11 @@ const Buckets = () => {
   const handleEdit = (bucket) => {
     setSelectedBucket(bucket);
     setShowEditModal(true);
+  };
+
+  const handleAddFund = (bucket) => {
+    setSelectedBucket(bucket);
+    setShowAddFundModal(true);
   };
 
   const handleDelete = (bucket) => {
@@ -207,6 +220,12 @@ const Buckets = () => {
     window.location.reload();
   };
 
+  const handleAddFundSuccess = () => {
+    setShowAddFundModal(false);
+    // Refresh buckets
+    window.location.reload();
+  };
+
   const handleEditSuccess = () => {
     setShowEditModal(false);
     setSelectedBucket(null);
@@ -257,6 +276,7 @@ const Buckets = () => {
               bucket={bucket}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              onAddFund={handleAddFund}
             />
           ))
         )}
@@ -274,6 +294,14 @@ const Buckets = () => {
           bucket={selectedBucket}
           onClose={() => setShowEditModal(false)}
           onSuccess={handleEditSuccess}
+        />
+      )}
+
+      {showAddFundModal && selectedBucket && (
+        <AddFundModal
+          bucket={selectedBucket}
+          onClose={() => setShowAddFundModal(false)}
+          onSuccess={handleAddFundSuccess}
         />
       )}
     </div>
@@ -383,6 +411,84 @@ const BucketModal = ({ bucket, onClose, onSuccess }) => {
             </button>
             <button type="submit" disabled={loading} className={styles.submitButton}>
               {loading ? 'Saving...' : (bucket ? 'Update' : 'Create')}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+const AddFundModal = ({ bucket, onClose, onSuccess }) => {
+  const [formData, setFormData] = useState({
+    amount: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.amount || parseFloat(formData.amount) <= 0) {
+      setError('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError('');
+      
+      await bucketAPI.addFund(bucket._id, parseFloat(formData.amount));
+      onSuccess();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  return (
+    <div className={styles.modalOverlay}>
+      <div className={styles.modal}>
+        <div className={styles.modalHeader}>
+          <h3>Add Fund to {bucket.bucketName}</h3>
+          <button onClick={onClose} className={styles.closeButton}>×</button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className={styles.modalForm}>
+          <div className={styles.formGroup}>
+            <label>Amount</label>
+            <input
+              type="number"
+              name="amount"
+              value={formData.amount}
+              onChange={handleChange}
+              placeholder="Enter amount"
+              step="0.01"
+              required
+            />
+          </div>
+          
+          <div className={styles.currentBalance}>
+            <small>Current Fund: ₹{bucket.bucketFund.toLocaleString('en-IN')}</small>
+          </div>
+          
+          {error && <div className={styles.error}>{error}</div>}
+          
+          <div className={styles.modalActions}>
+            <button type="button" onClick={onClose} className={styles.cancelButton}>
+              Cancel
+            </button>
+            <button type="submit" disabled={loading} className={styles.submitButton}>
+              {loading ? 'Adding...' : 'Add Fund'}
             </button>
           </div>
         </form>

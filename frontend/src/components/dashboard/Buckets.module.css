@@ -23,7 +23,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background-color: var(--primary-color);
+  background-color: #1e99e5;
   color: white;
   border: none;
   border-radius: 12px;
@@ -36,7 +36,8 @@
 }
 
 .addButton:hover {
-  background-color: #E67E00;
+  background-color: #e6f3ff;
+  color: black;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
@@ -77,7 +78,7 @@
 .bucketIcon {
   width: 40px;
   height: 40px;
-  background-color: var(--primary-color);
+  background-color: #1e99e5;
   color: white;
   border-radius: 12px;
   display: flex;
@@ -122,9 +123,9 @@
 }
 
 .actionButton:hover {
-  background-color: var(--primary-color);
+  background-color: #1e99e5;
   color: white;
-  border-color: var(--primary-color);
+  border-color: #1e99e5;
 }
 
 .buttonText {
@@ -134,20 +135,43 @@
 }
 
 .deleteButton {
-  background-color: #FEE2E2;
-  border-color: #FECACA;
+  background-color: #cc0f0f;
+  border-color: #cc0f0f;
 }
 
 .deleteButton:hover {
-  background-color: #FCA5A5;
-  border-color: #FCA5A5;
+  background-color: #cc0f0f;
+  border-color: #cc0f0f;
 }
 
 .deleteText {
-  color: #DC2626;
+  color: white;
   font-weight: 700;
   font-size: 26px;
   line-height: 1;
+}
+
+.bucketActions .addButton {
+  background-color: #10B981;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #10B981;
+  padding-top: 8px;
+}
+
+.bucketActions .addButton:hover {
+  background-color: #f7f6f5;
+  color: #10B981;
+}
+
+.bucketActions .addButton svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 3;
 }
 
 .bucketStats {
@@ -155,7 +179,7 @@
 }
 
 .fundDisplay {
-  background: linear-gradient(135deg, var(--primary-color), #E67E00);
+  background: linear-gradient(135deg, #1e99e5, #147bb8);
   color: white;
   padding: 16px;
   border-radius: 12px;
@@ -235,7 +259,7 @@
 
 .progressFill {
   height: 100%;
-  background-color: var(--primary-color);
+  background-color: #1e99e5;
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -249,7 +273,7 @@
 }
 
 .percentageBadge {
-  background-color: var(--primary-color);
+  background-color: #1e99e5;
   color: white;
   padding: 2px 8px;
   border-radius: 12px;
@@ -280,7 +304,7 @@
 }
 
 .createButton {
-  background-color: var(--primary-color);
+  background-color: #1e99e5;
   color: white;
   border: none;
   border-radius: 12px;
@@ -292,7 +316,7 @@
 }
 
 .createButton:hover {
-  background-color: #E67E00;
+  background-color: #1e99e5;
 }
 
 /* Loading State */
@@ -424,12 +448,25 @@
 }
 
 .error {
-  color: #EF4444;
+  color: #1e99e5;
   font-size: 14px;
   padding: 12px;
-  background-color: #FEF2F2;
+  background-color: #e6f3ff;
   border-radius: 8px;
-  border: 1px solid #FECACA;
+  border: 1px solid #b3d9ff;
+}
+
+.currentBalance {
+  margin: 8px 0;
+  padding: 12px;
+  background-color: #F3F4F6;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.currentBalance small {
+  color: #6B7280;
+  font-weight: 500;
 }
 
 .modalActions {
@@ -469,7 +506,7 @@
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #E67E00;
+  background-color: #1e99e5;
 }
 
 .submitButton:disabled {

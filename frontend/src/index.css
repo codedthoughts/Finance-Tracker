@@ -2,7 +2,7 @@
   /* Theme Variables */
   --background: #F3F4F6;
   --card-background: #FFFFFF;
-  --primary-color: #F79009;
+  --primary-color: #1e99e5;
   --text-color: #1D2939;
   --text-secondary: #6B7280;
   --border-radius: 24px;
@@ -53,7 +53,7 @@ button {
 }
 
 button:hover {
-  background-color: #E67E00;
+  background-color: #1e99e5;
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }

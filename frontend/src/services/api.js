@@ -54,6 +54,11 @@ export const bucketAPI = {
   deleteBucket: (id) => apiRequest(`/bucket/delete/${id}`, {
     method: 'DELETE',
   }),
+  
+  addFund: (id, amount) => apiRequest(`/bucket/add-fund/${id}`, {
+    method: 'POST',
+    body: JSON.stringify({ amount }),
+  }),
 };
 
 // Expense API
